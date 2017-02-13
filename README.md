@@ -1,56 +1,139 @@
-# Composer template for Drupal projects
-
-[![Build Status](https://travis-ci.org/drupal-composer/drupal-project.svg?branch=8.x)](https://travis-ci.org/drupal-composer/drupal-project)
+# Origin Composer template for Drupal 8 projects
 
 This project template should provide a kickstart for managing your site
 dependencies with [Composer](https://getcomposer.org/).
 
-If you want to know how to use it as replacement for
-[Drush Make](https://github.com/drush-ops/drush/blob/master/docs/make.md) visit
-the [Documentation on drupal.org](https://www.drupal.org/node/2471553).
+## Requirements
 
-## Usage
+- [Composer](https://getcomposer.org/download/)
+- [Docker](https://docs.docker.com/engine/installation/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Git](https://git-scm.com/downloads)
 
-First you need to [install composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
+## 1. Setting Up Drupal on Docker
 
-> Note: The instructions below refer to the [global composer installation](https://getcomposer.org/doc/00-intro.md#globally).
-You might need to replace `composer` with `php composer.phar` (or similar) 
-for your setup.
+### a. Getting Drupal and Docker running
 
-After that you can create the project:
+This setup is done on windows, the main projects directory is as close as the C folder to avoid path length limit to 260 characters on Windows. In the following steps, the projects folder is C:\webroot\ and the project name is called "Origin Drop".
 
+The following commands will:
+
+- Navigate to the webroot directory
+- Clone the Origin Drupal 8 project into webroot/origindrop/ folder
+- Installing a Drupal Project using Composer
+- Setup docker containers locally (a LEMP stack working with Nginx, Php 7, MariaDB, PhpMyAdmin and mailhog)
+- Remove git tracking so you can set your own
+```shell
+$ cd .../webroot
+$ git clone git@github.com:origindesign/origin-drupal-8.git origindrop
+$ cd origindrop
+$ composer update
+$ docker-compose up -d
+$ rm -rf .git
 ```
-composer create-project drupal-composer/drupal-project:8.x-dev some-dir --stability dev --no-interaction
+
+### b. Installing Drupal
+
+If everything went well:
+
+- Navigate to <http://localhost:8000> and you should see the Drupal Installation page
+- Navigate to <http://localhost:8001> and you should see PhpMyAdmin interface with an empty drupal database
+- From the install page, follow the classic Drupal installation step using the following credentials:
+```
+Database: drupal
+Username: drupal
+Password: drupal
+host: mariadb
+port: 3306
+```
+- After the installation, enter the site information and you should get your fresh Drupal 8 Site.
+- At the time of this writing, docker has some permissions issues in the files directory with drupal 8.2.x version in the core/includes/files.inc. This can be solved by using drupal > 8.3.x (alpha at the time of this writing) and applying this [patch](https://www.drupal.org/node/944582)
+
+### c. Architecture
+<pre>
+webroot/
+└── origindrop/
+    ├── docker-runtime/
+    |   └── ...
+    ├── drush/
+    |   └── ...
+    ├── scripts/
+    |   └── ...
+    ├── vendor/
+    |   └── ...
+    ├── web/
+    |   ├── core/
+    |   ├── modules/
+    |   ├── profiles/
+    |   ├── sites/
+    |   ├── themes/
+    |   ├── .htaccess
+    |   ├── autoload.php
+    |   ├── index.php
+    |   ├── robots.txt
+    |   ├── update.php
+    |   ├── web.config
+    |   └── ...
+    ├── .gitignore
+    ├── .travis.yml
+    ├── composer.json
+    ├── composer.lock
+    ├── docker-compose.yml
+    ├── LICENCE
+    ├── phpunit.xml.dist
+    └── README.md
+</pre>
+
+### d. Stopping and Removing containers
+
+When you want to stop working on a project, type `docker-compose stop` from the root of the project, it will stop the containers.
+IMPORTANT: Do not use `docker-compose down` command because it will purge MariaDB volume. Instead use `docker-compose stop`. If you restart Docker you WILL NOT lose your MariaDB data. 
+
+
+## 3. Using Drush to manage Config Manager and Cache Rebuild
+
+- Drush can be accessed normally after sshing into the php container:
+```shell
+$ docker-compose exec php sh
+$ cd var/www/html/web
+$ drush status
+```
+- Drush can aslo be accessed through the docker-compose command and by specifiying the root directory `docker-compose exec php drush -r /var/www/html/web/ status`
+- In order to simplify the command, you can create an alias in your .bashrc file like `alias ddrush='docker-compose exec php drush'` (I called mine "ddrush" for docker drush)
+- Then you'd need to create your drush aliases and copy it from your local machine to the php container drush directory:
+```shell
+$ cd ~/.drush
+$ docker cp origindrop.aliases.drushrc.php origindrop_php_1:/root/.drush/origindrop.aliases.drushrc.php
+```
+- Depending on the name you set for your aliases, you should be able to run drush from your local like these:
+```shell
+$ ddrush @local status 
+$ ddrush @pantheon.origindrop.dev status 
 ```
 
-With `composer require ...` you can download new dependencies to your 
-installation.
+## 4. Pushing into Host (Pantheon)
 
+If you want to use Pantheon as hosting for your site, you can navigate to web/sites/default, delete the settings.php file and rename :
+```shell
+settings.local.php.txt to settings.local.php
+settings.pantheon.php.txt to settings.pantheon.php
+settings.php.txt to settings.php
 ```
-cd some-dir
-composer require drupal/devel:~1.0
+
+From the Pantheon Dashboard, create a new Drupal 8 site; then, before installing Drupal, set your site to git mode and do the following from the root of your local project:
+```shell
+$ git init
+$ git add -A .
+$ git commit -m "Setting up Drupal with web docroot"
+$ git remote add origin ssh://ID@ID.drush.in:2222/~/repository.git
+$ git push --force origin master
 ```
+Replace ssh://ID@ID.drush.in:2222/~/repository.git with the URL from the middle of the SSH clone URL from the Connection Info popup dialog on your dashboard.
 
-The `composer create-project` command passes ownership of all files to the 
-project that is created. You should create a new git repository, and commit 
-all files not excluded by the .gitignore file.
 
-## What does the template do?
+## FAQ
 
-When installing the given `composer.json` some tasks are taken care of:
-
-* Drupal will be installed in the `web`-directory.
-* Autoloader is implemented to use the generated composer autoloader in `vendor/autoload.php`,
-  instead of the one provided by Drupal (`web/vendor/autoload.php`).
-* Modules (packages of type `drupal-module`) will be placed in `web/modules/contrib/`
-* Theme (packages of type `drupal-theme`) will be placed in `web/themes/contrib/`
-* Profiles (packages of type `drupal-profile`) will be placed in `web/profiles/contrib/`
-* Creates default writable versions of `settings.php` and `services.yml`.
-* Creates `sites/default/files`-directory.
-* Latest version of drush is installed locally for use at `vendor/bin/drush`.
-* Latest version of DrupalConsole is installed locally for use at `vendor/bin/drupal`.
-
-## Updating Drupal Core
+### How do I update Drupal Core
 
 This project will attempt to keep all of your Drupal Core files up-to-date; the 
 project [drupal-composer/drupal-scaffold](https://github.com/drupal-composer/drupal-scaffold) 
@@ -74,19 +157,7 @@ Follow the steps below to update your core files.
    keeping all of your modifications at the beginning or end of the file is a 
    good strategy to keep merges easy.
 
-## Generate composer.json from existing project
 
-With using [the "Composer Generate" drush extension](https://www.drupal.org/project/composer_generate)
-you can now generate a basic `composer.json` file from an existing project. Note
-that the generated `composer.json` might differ from this project's file.
-
-
-## FAQ
-
-### Should I commit the contrib modules I download?
-
-Composer recommends **no**. They provide [argumentation against but also 
-workrounds if a project decides to do it anyway](https://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md).
 
 ### Should I commit the scaffolding files?
 
@@ -126,6 +197,8 @@ section of composer.json:
     }
 }
 ```
-### How do I switch from packagist.drupal-composer.org to packages.drupal.org?
 
-Follow the instructions in the [documentation on drupal.org](https://www.drupal.org/docs/develop/using-composer/using-packagesdrupalorg).
+
+## Troubleshooting
+- If you use Mintty as a terminal emulator for Cygwin, you may have some issues when trying to ssh into docker containers. Prefered solution it to use default cmd for Cygwin or git bash if you prefer not to use Cygwin. See the discusion [here](https://github.com/docker/docker/pull/22956)
+

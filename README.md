@@ -131,9 +131,9 @@ $ git push --force origin master
 Replace ssh://ID@ID.drush.in:2222/~/repository.git with the URL from the middle of the SSH clone URL from the Connection Info popup dialog on your dashboard.
 
 
-## FAQ
+## 5. FAQ
 
-### How do I update Drupal Core
+### a. How do I update Drupal Core?
 
 This project will attempt to keep all of your Drupal Core files up-to-date; the 
 project [drupal-composer/drupal-scaffold](https://github.com/drupal-composer/drupal-scaffold) 
@@ -159,7 +159,7 @@ Follow the steps below to update your core files.
 
 
 
-### Should I commit the scaffolding files?
+### b. Should I commit the scaffolding files?
 
 The [drupal-scaffold](https://github.com/drupal-composer/drupal-scaffold) plugin can download the scaffold files (like
 index.php, update.php, …) to the web/ directory of your project. If you have not customized those files you could choose
@@ -180,7 +180,7 @@ achieve that by registering `@drupal-scaffold` as post-install and post-update c
     ]
 },
 ```
-### How can I apply patches to downloaded modules?
+### c. How can I apply patches to downloaded modules?
 
 If you need to apply patches (depending on the project being modified, a pull 
 request is often a better solution), you can do so with the 
@@ -199,6 +199,10 @@ section of composer.json:
 ```
 
 
-## Troubleshooting
+## 6. Troubleshooting
 - If you use Mintty as a terminal emulator for Cygwin, you may have some issues when trying to ssh into docker containers. Prefered solution it to use default cmd for Cygwin or git bash if you prefer not to use Cygwin. See the discusion [here](https://github.com/docker/docker/pull/22956)
 
+
+## 7. Troubleshooting
+- Based on [docker4drupal](https://github.com/wodby/docker4drupal)
+- Optmized for Origin from [Drupal Composer](https://github.com/drupal-composer/drupal-project)

@@ -1,0 +1,26 @@
+api_version: 1
+web_docroot: true
+php_version: 7.0
+workflows:
+  sync_code:
+    after:
+      - type: webphp
+        description: 'Run drush updb'
+        script: private/scripts/drush/drush_update_database.php
+      - type: webphp
+        description: 'Run drush config-import'
+        script: private/scripts/drush/drush_config_import.php
+      - type: webphp
+        description: 'Run drush cr'
+        script: private/scripts/drush/drush_cache_rebuild.php
+  deploy:
+    after:
+      - type: webphp
+        description: 'Run drush updb'
+        script: private/scripts/drush/drush_update_database.php
+      - type: webphp
+        description: 'Run drush config-import'
+        script: private/scripts/drush/drush_config_import.php
+      - type: webphp
+        description: 'Run drush cr'
+        script: private/scripts/drush/drush_cache_rebuild.php

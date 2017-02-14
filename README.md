@@ -27,7 +27,7 @@ The following commands will:
 $ cd .../webroot
 $ git clone git@github.com:origindesign/origin-drupal-8.git origindrop
 $ cd origindrop
-$ composer update
+$ composer install
 $ docker-compose up -d
 $ rm -rf .git
 ```
@@ -75,7 +75,6 @@ webroot/
     |   ├── web.config
     |   └── ...
     ├── .gitignore
-    ├── .travis.yml
     ├── composer.json
     ├── composer.lock
     ├── docker-compose.yml

@@ -94,7 +94,7 @@ IMPORTANT: Do not use `docker-compose down` command because it will purge MariaD
 - Drush can be accessed normally after sshing into the php container:
 ```shell
 $ docker-compose exec php sh
-$ cd var/www/html/web
+$ cd /var/www/html/web
 $ drush status
 ```
 - Drush can aslo be accessed through the docker-compose command and by specifiying the root directory `docker-compose exec php drush -r /var/www/html/web/ status`
@@ -112,14 +112,15 @@ $ ddrush @pantheon.origindrop.dev status
 
 ## 4. Pushing into Host (Pantheon)
 
-If you want to use Pantheon as hosting for your site, you can navigate to web/sites/default, delete the settings.php file and rename :
+
+Navigate to web/sites/default and rename :
 ```shell
 settings.local.php.txt to settings.local.php
 settings.pantheon.php.txt to settings.pantheon.php
 settings.php.txt to settings.php
 ```
 
-From the Pantheon Dashboard, create a new Drupal 8 site; then, before installing Drupal, set your site to git mode and do the following from the root of your local project:
+- From the Pantheon Dashboard, create a new Drupal 8 site; then, before installing Drupal, set your site to git mode and do the following from the root of your local project:
 ```shell
 $ git init
 $ git add -A .
@@ -128,6 +129,11 @@ $ git remote add origin ssh://ID@ID.drush.in:2222/~/repository.git
 $ git push --force origin master
 ```
 Replace ssh://ID@ID.drush.in:2222/~/repository.git with the URL from the middle of the SSH clone URL from the Connection Info popup dialog on your dashboard.
+
+- Once it's pushed in the repository, go back in the Pantheon Dashboard and set your site to sftp mode. Navigate to your Dev site and install drupal as normal.
+- If it's not done yet, download the drush aliases and set it up as described in point 3
+- 
+
 
 
 ## 5. FAQ

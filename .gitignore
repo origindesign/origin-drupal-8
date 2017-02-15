@@ -3,7 +3,7 @@
 /web/sites/*/files/
 
 # Ignore settings local
-# /web/sites/*/settings.local.php
+/web/sites/*/settings.local.php
 # /web/sites/*/services*.yml
 
 

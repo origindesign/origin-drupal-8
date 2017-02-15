@@ -132,8 +132,12 @@ Replace ssh://ID@ID.drush.in:2222/~/repository.git with the URL from the middle 
 
 - Once it's pushed in the repository, go back in the Pantheon Dashboard and set your site to sftp mode. Navigate to your Dev site and install drupal as normal.
 - If it's not done yet, download the drush aliases and set it up as described in point 3
-- 
-
+- In order to use config manager, you need to sync the database and files before pushing anything else. From the root of the project:
+```shell
+$ ddrush sql-sync @origindrop.local @origindrop.dev
+$ ddrush -r . rsync @origindrop.local:sites/default/files/ @origindrop.dev:%files
+```
+- This way, the local and the dev site are using the same UUID so we can use config manager
 
 
 ## 5. FAQ

@@ -36,8 +36,10 @@ $ rm -rf .git
 
 If everything went well:
 
-- Navigate to <http://localhost:8000> and you should see the Drupal Installation page
-- Navigate to <http://localhost:8001> and you should see PhpMyAdmin interface with an empty drupal database
+- Navigate to <http://origindrupal.docker.localhost:8000> and you should see the Drupal Installation page
+- Navigate to <http://pma.origindrupal.docker.localhost:8000> and you should see PhpMyAdmin interface with an empty drupal database
+- Navigate to <http://localhost:8080/dashboard/#!/> and you should see the list of all the containers
+- For your project, make sure to update the docker-compose file with a new domain name. Replace all 3 instances of origindrupal.docker.localhost by yoursitename.docker.localhost
 - From the install page, follow the classic Drupal installation step using the following credentials:
 ```
 Database: drupal

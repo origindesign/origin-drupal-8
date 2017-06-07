@@ -40,7 +40,7 @@ services:
     labels:
       - 'traefik.backend=nginx'
       - 'traefik.port=80'
-      - 'traefik.frontend.rule=Host:origindrupal.docker.localhost'
+      - 'traefik.frontend.rule=Host:origindrop.docker.localhost'
 
   redis:
     image: wodby/redis:3.2-2.0.1
@@ -56,14 +56,14 @@ services:
     labels:
       - 'traefik.backend=pma'
       - 'traefik.port=80'
-      - 'traefik.frontend.rule=Host:pma.origindrupal.docker.localhost'
+      - 'traefik.frontend.rule=Host:pma.origindrop.docker.localhost'
 
   mailhog:
     image: mailhog/mailhog
     labels:
       - 'traefik.backend=mailhog'
       - 'traefik.port=8025'
-      - 'traefik.frontend.rule=Host:mailhog.origindrupal.docker.localhost'
+      - 'traefik.frontend.rule=Host:mailhog.origindrop.docker.localhost'
 
 
 #  memcached:

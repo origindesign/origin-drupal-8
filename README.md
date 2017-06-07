@@ -26,6 +26,9 @@ The following commands will:
 ```shell
 $ cd .../webroot
 $ git clone git@github.com:origindesign/origin-drupal-8.git origindrop
+```
+- For your project, make sure to update the docker-compose file with a new domain name. Replace all 3 instances of origindrupal.docker.localhost by yoursitename.docker.localhost
+```shell
 $ cd origindrop
 $ composer install
 $ docker-compose up -d
@@ -112,8 +115,7 @@ $ ddrush @local status
 $ ddrush @pantheon.origindrop.dev status 
 ```
 
-## 4. Pushing into Host (Pantheon)
-
+## 4. Preparing for Pantheon
 
 Navigate to web/sites/default and rename :
 ```shell
@@ -121,7 +123,6 @@ settings.local.php.txt to settings.local.php
 settings.pantheon.php.txt to settings.pantheon.php
 settings.php.txt to settings.php
 ```
-
 - From the Pantheon Dashboard, create a new Drupal 8 site; then, before installing Drupal, set your site to git mode and do the following from the root of your local project:
 ```shell
 $ git init
@@ -142,7 +143,14 @@ $ ddrush -r . rsync @origindrop.local:sites/default/files/ @origindrop.dev:%file
 - This way, the local and the dev site are using the same UUID so we can use config manager
 
 
-## 5. FAQ
+## 5. Configuring Circle CI
+
+
+## 6. Pushing to Github
+
+
+
+## 7. FAQ
 
 ### a. How do I update Drupal Core?
 
@@ -210,10 +218,11 @@ section of composer.json:
 ```
 
 
-## 6. Troubleshooting
+## 8. Troubleshooting
 - If you use Mintty as a terminal emulator for Cygwin, you may have some issues when trying to ssh into docker containers. Prefered solution it to use default cmd for Cygwin or git bash if you prefer not to use Cygwin. See the discusion [here](https://github.com/docker/docker/pull/22956)
 
 
-## 7. Troubleshooting
+## 9. Credits
+- Based on [Drop 8 Composer](https://github.com/pantheon-systems/example-drops-8-composer) from Pantheon 
 - Based on [docker4drupal](https://github.com/wodby/docker4drupal)
 - Optmized for Origin from [Drupal Composer](https://github.com/drupal-composer/drupal-project)
